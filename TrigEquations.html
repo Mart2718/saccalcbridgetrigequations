@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solving Trig Equations · CalcBridge</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$',right:'$',display:false}]})"></script>
+<style>
+:root{
+  --teal:#0D5C73;--teal2:#1B7A96;--teal3:#0a3f52;
+  --orange:#D4622A;--gold:#E8A020;--yellow:#FFD166;
+  --bg:#F4F7F9;--text:#1A2A33;--muted:#5A7080;
+  --white:#ffffff;--green:#1a6b4a;--red:#b91c1c;
+  --border:#D0DDE5;--purple:#5b21b6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+/* ── HERO ── */
+.hero{background:var(--teal3);color:white;padding:48px 20px 52px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 50px,rgba(255,255,255,.012) 50px,rgba(255,255,255,.012) 51px)}
+.hero-eyebrow{position:relative;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);opacity:.8;margin-bottom:10px}
+.hero-title{position:relative;font-family:'DM Serif Display',serif;font-size:clamp(26px,5vw,46px);color:white;line-height:1.1;margin-bottom:12px}
+.hero-title em{color:var(--yellow);font-style:italic}
+.hero-sub{position:relative;font-size:15px;color:rgba(255,255,255,.6);max-width:500px;margin:0 auto 24px;font-weight:300;line-height:1.75}
+.hero-pills{position:relative;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.hero-pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:6px 14px;font-size:12px;color:rgba(255,255,255,.75);font-weight:500}
+.hero-pill strong{color:var(--yellow)}
+
+/* ── REFERENCE ── */
+.ref-section{background:white;border-bottom:1px solid var(--border)}
+.ref-toggle{width:100%;background:none;border:none;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:var(--teal3);text-align:left}
+.ref-toggle .chevron{font-size:16px;transition:transform .2s;color:var(--muted)}
+.ref-toggle.open .chevron{transform:rotate(180deg)}
+.ref-body{display:none;padding:0 20px 20px}
+.ref-body.open{display:block}
+.ref-grids{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:4px}
+.ref-block{background:var(--bg);border-radius:10px;padding:14px}
+.ref-block-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.tl{color:var(--teal2)}.or{color:var(--orange)}.go{color:var(--gold)}.pu{color:var(--purple)}
+.val-table{width:100%;font-size:12px;border-collapse:collapse}
+.val-table th{color:var(--muted);font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:3px 4px;text-align:center;border-bottom:1px solid var(--border)}
+.val-table td{padding:4px 4px;text-align:center;color:var(--text);border-bottom:1px solid var(--border)}
+.val-table tr:last-child td{border-bottom:none}
+.ref-row{font-size:13px;color:var(--text);padding:4px 0;border-bottom:1px solid var(--border);line-height:1.6}
+.ref-row:last-child{border-bottom:none}
+.strategy-box{background:var(--teal3);border-radius:10px;padding:14px 16px;margin-top:12px}
+.strat-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);opacity:.8;margin-bottom:8px}
+.strat-steps{display:flex;gap:10px;flex-wrap:wrap}
+.strat-step{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:rgba(255,255,255,.8);flex:1;min-width:160px}
+.strat-num{width:22px;height:22px;border-radius:50%;background:var(--orange);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* ── PROGRESS ── */
+.progress-bar-wrap{background:white;border-bottom:1px solid var(--border);padding:10px 20px;position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px}
+.prog-label{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.prog-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal2));border-radius:3px;transition:width .4s}
+.prog-count{font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* ── PROBLEMS ── */
+.problems{max-width:700px;margin:0 auto;padding:20px 16px 60px}
+.section-divider{display:flex;align-items:center;gap:12px;margin:28px 0 16px}
+.div-line{flex:1;height:1px;background:var(--border)}
+.div-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);white-space:nowrap;text-align:center}
+
+.card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.card-header{padding:16px 18px 14px;display:flex;align-items:flex-start;gap:14px}
+.card-num{width:30px;height:30px;border-radius:50%;background:var(--teal3);color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.card-content{flex:1}
+.card-type{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.card-claim{font-size:18px;color:var(--teal3);line-height:1.4}
+.card-context{font-size:12px;color:var(--muted);margin-top:4px;font-style:italic}
+.card-buttons{padding:0 18px 14px;display:flex;gap:8px;flex-wrap:wrap}
+.btn-hint{background:var(--bg);border:1.5px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-hint:hover{border-color:var(--gold);color:var(--gold)}
+.btn-steps{background:var(--teal2);color:white;border:none;padding:7px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s}
+.btn-steps:hover{background:var(--teal)}
+.btn-steps:disabled{background:var(--border);color:var(--muted);cursor:default}
+
+/* ── HINT ── */
+.hint-box{display:none;margin:0 18px 10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;font-size:13px;color:#92400e}
+.hint-box.show{display:block}
+
+/* ── STEPS ── */
+.steps-reveal{display:none;margin:0 18px 14px}
+.steps-reveal.show{display:block}
+.step-row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.step-row:last-child{border-bottom:none}
+.step-eq{flex:1;font-size:15px;color:var(--text);line-height:1.5}
+.step-tag{font-size:11px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:6px;white-space:nowrap;margin-top:3px;flex-shrink:0}
+.tag-iso {background:#e0f0f8;color:var(--teal2)}
+.tag-ref {background:#e8f5ef;color:var(--green)}
+.tag-quad{background:#fff3e0;color:#c05e00}
+.tag-sol {background:#f3f0ff;color:var(--purple)}
+.tag-id  {background:#fef2f2;color:var(--red)}
+.tag-alg {background:#f1f5f9;color:var(--muted)}
+
+/* ── SELF CHECK ── */
+.self-check{display:none;margin:0 18px 16px;padding:12px 14px;background:var(--bg);border-radius:10px}
+.self-check.show{display:block}
+.sc-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px}
+.sc-btns{display:flex;gap:8px;flex-wrap:wrap}
+.sc-btn{padding:7px 14px;border-radius:8px;border:1.5px solid;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.sc-got{border-color:var(--green);color:var(--green);background:white}
+.sc-got:hover,.sc-got.chosen{background:var(--green);color:white}
+.sc-almost{border-color:var(--gold);color:var(--gold);background:white}
+.sc-almost:hover,.sc-almost.chosen{background:var(--gold);color:white}
+.sc-need{border-color:var(--red);color:var(--red);background:white}
+.sc-need:hover,.sc-need.chosen{background:var(--red);color:white}
+
+/* ── RESULTS ── */
+.results-screen{display:none;max-width:700px;margin:0 auto;padding:0 16px 60px}
+.results-screen.show{display:block}
+.results-card{background:var(--teal3);border-radius:16px;padding:36px 28px;text-align:center;color:white}
+.res-title{font-family:'DM Serif Display',serif;font-size:28px;color:white;margin-bottom:10px}
+.res-sub{font-size:15px;color:rgba(255,255,255,.65);margin-bottom:24px;max-width:420px;margin-left:auto;margin-right:auto}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px}
+.res-stat{background:rgba(255,255,255,.1);border-radius:10px;padding:16px 8px}
+.res-num{font-family:'DM Serif Display',serif;font-size:28px;color:white}
+.res-lbl{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-retry{background:white;color:var(--teal3);border:none;padding:12px 24px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
+.btn-id-link{background:var(--gold);color:var(--teal3);border:none;padding:12px 24px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+
+/* ── FOOTER ── */
+.footer-cta{background:white;border-top:1px solid var(--border);padding:32px 20px;text-align:center}
+.footer-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--teal3);margin-bottom:8px}
+.footer-sub{font-size:14px;color:var(--muted);margin-bottom:18px}
+.footer-link{display:inline-block;background:var(--orange);color:white;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">CalcBridge · Diagnostic D · Problem 8</div>
+  <h1 class="hero-title">Solving Trig <em>Equations</em></h1>
+  <p class="hero-sub">Isolate — find the reference angle — place it in the right quadrants. Work through each step, then check yourself.</p>
+  <div class="hero-pills">
+    <span class="hero-pill"><strong>Part 1</strong> Interval $[0,2\pi)$</span>
+    <span class="hero-pill"><strong>Part 2</strong> All real solutions</span>
+    <span class="hero-pill"><strong>Part 3</strong> Use an identity first</span>
+  </div>
+</section>
+
+<!-- REFERENCE -->
+<div class="ref-section">
+  <button class="ref-toggle" onclick="toggleRef(this)" aria-expanded="false">
+    <span>📋 Reference — Exact Values & Period Rules — tap to open</span>
+    <span class="chevron">▾</span>
+  </button>
+  <div class="ref-body" id="refBody">
+    <div class="ref-grids">
+
+      <div class="ref-block">
+        <div class="ref-block-title tl">Key Exact Values</div>
+        <table class="val-table">
+          <thead><tr><th>Angle</th><th>sin</th><th>cos</th><th>tan</th></tr></thead>
+          <tbody>
+            <tr><td>$0$</td><td>$0$</td><td>$1$</td><td>$0$</td></tr>
+            <tr><td>$\frac{\pi}{6}$</td><td>$\frac{1}{2}$</td><td>$\frac{\sqrt{3}}{2}$</td><td>$\frac{1}{\sqrt{3}}$</td></tr>
+            <tr><td>$\frac{\pi}{4}$</td><td>$\frac{\sqrt{2}}{2}$</td><td>$\frac{\sqrt{2}}{2}$</td><td>$1$</td></tr>
+            <tr><td>$\frac{\pi}{3}$</td><td>$\frac{\sqrt{3}}{2}$</td><td>$\frac{1}{2}$</td><td>$\sqrt{3}$</td></tr>
+            <tr><td>$\frac{\pi}{2}$</td><td>$1$</td><td>$0$</td><td>undef</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ref-block">
+        <div class="ref-block-title or">Signs by Quadrant (ASTC)</div>
+        <div class="ref-row">Q I — All positive</div>
+        <div class="ref-row">Q II — $\sin$ positive only</div>
+        <div class="ref-row">Q III — $\tan$ positive only</div>
+        <div class="ref-row">Q IV — $\cos$ positive only</div>
+      </div>
+
+      <div class="ref-block">
+        <div class="ref-block-title go">General Solution Forms</div>
+        <div class="ref-row">$\sin$ & $\cos$: add $+ 2\pi n$</div>
+        <div class="ref-row">$\tan$ & $\cot$: add $+ \pi n$</div>
+        <div class="ref-row">$n \in \mathbb{Z}$ (any integer)</div>
+      </div>
+
+      <div class="ref-block">
+        <div class="ref-block-title pu">Useful Identity</div>
+        <div class="ref-row">Double-angle: $\sin 2x = 2\sin x \cos x$</div>
+        <div class="ref-row">Pythagorean: $\sin^2 x + \cos^2 x = 1$</div>
+      </div>
+
+    </div>
+
+    <div class="strategy-box">
+      <div class="strat-title">Strategy: Four Steps Every Time</div>
+      <div class="strat-steps">
+        <div class="strat-step"><div class="strat-num">1</div><span><strong>Isolate</strong> — get the trig function alone on one side.</span></div>
+        <div class="strat-step"><div class="strat-num">2</div><span><strong>Reference angle</strong> — use the exact value to find the angle in Q I.</span></div>
+        <div class="strat-step"><div class="strat-num">3</div><span><strong>Quadrants</strong> — use the sign (ASTC) to find which two quadrants apply.</span></div>
+        <div class="strat-step"><div class="strat-num">4</div><span><strong>Write solutions</strong> — list angles in $[0,2\pi)$ or add $+2\pi n$ / $+\pi n$ for all solutions.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar-wrap">
+  <span class="prog-label">Progress</span>
+  <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  <span class="prog-count" id="progCount">0 / 6</span>
+</div>
+
+<!-- PROBLEMS -->
+<div class="problems" id="problemsSection">
+
+  <!-- PART 1 -->
+  <div class="section-divider"><div class="div-line"></div><div class="div-label">Part 1 — Solve on $[0,\,2\pi)$</div><div class="div-line"></div></div>
+
+  <!-- P1 -->
+  <div class="card" id="card-0">
+    <div class="card-header">
+      <div class="card-num">1</div>
+      <div class="card-content">
+        <div class="card-type">Isolate & solve</div>
+        <div class="card-claim">$2\cos x = \sqrt{3}$</div>
+        <div class="card-context">Find all solutions on $[0, 2\pi)$.</div>
+      </div>
+    </div>
+    <div class="card-buttons">
+      <button class="btn-hint" onclick="showHint(0)">Hint</button>
+      <button class="btn-steps" id="step-btn-0" onclick="revealStep(0)">Show Step 1 →</button>
+    </div>
+    <div class="hint-box" id="hint-0">Divide both sides by 2 first. Then ask: for what angle is $\cos = \frac{\sqrt{3}}{2}$?</div>
+    <div class="steps-reveal" id="steps-0"></div>
+    <div class="self-check" id="sc-0"></div>
+  </div>
+
+  <!-- P2 -->
+  <div class="card" id="card-1">
+    <div class="card-header">
+      <div class="card-num">2</div>
+      <div class="card-content">
+        <div class="card-type">Isolate & solve</div>
+        <div class="card-claim">$\sqrt{3}\tan x + 1 = 0$</div>
+        <div class="card-context">Find all solutions on $[0, 2\pi)$.</div>
+      </div>
+    </div>
+    <div class="card-buttons">
+      <button class="btn-hint" onclick="showHint(1)">Hint</button>
+      <button class="btn-steps" id="step-btn-1" onclick="revealStep(1)">Show Step 1 →</button>
+    </div>
+    <div class="hint-box" id="hint-1">Isolate $\tan x$ first. A negative tangent means Q II or Q IV.</div>
+    <div class="steps-reveal" id="steps-1"></div>
+    <div class="self-check" id="sc-1"></div>
+  </div>
+
+  <!-- P3 -->
+  <div class="card" id="card-2">
+    <div class="card-header">
+      <div class="card-num">3</div>
+      <div class="card-content">
+        <div class="card-type">Square root — four solutions</div>
+        <div class="card-claim">$4\cos^2 x = 3$</div>
+        <div class="card-context">Find all solutions on $[0, 2\pi)$. Expect four answers.</div>
+      </div>
+    </div>
+    <div class="card-buttons">
+      <button class="btn-hint" onclick="showHint(2)">Hint</button>
+      <button class="btn-steps" id="step-btn-2" onclick="revealStep(2)">Show Step 1 →</button>
+    </div>
+    <div class="hint-box" id="hint-2">Divide to get $\cos^2 x = \frac{3}{4}$, then take $\pm$ square root. Two signs → four quadrants.</div>
+    <div class="steps-reveal" id="steps-2"></div>
+    <div class="self-check" id="sc-2"></div>
+  </div>
+
+  <!-- PART 2 -->
+  <div class="section-divider"><div class="div-line"></div><div class="div-label">Part 2 — All real solutions</div><div class="div-line"></div></div>
+
+  <!-- P4 -->
+  <div class="card" id="card-3">
+    <div class="card-header">
+      <div class="card-num">4</div>
+      <div class="card-content">
+        <div class="card-type">General solution</div>
+        <div class="card-claim">$2\sin t = -\sqrt{3}$</div>
+        <div class="card-context">Find all real solutions. Use $+ 2\pi n$, $\;n \in \mathbb{Z}$.</div>
+      </div>
+    </div>
+    <div class="card-buttons">
+      <button class="btn-hint" onclick="showHint(3)">Hint</button>
+      <button class="btn-steps" id="step-btn-3" onclick="revealStep(3)">Show Step 1 →</button>
+    </div>
+    <div class="hint-box" id="hint-3">Negative $\sin$ → Q III and Q IV. Find both angles in $[0, 2\pi)$ first, then attach $+2\pi n$ to each.</div>
+    <div class="steps-reveal" id="steps-3"></div>
+    <div class="self-check" id="sc-3"></div>
+  </div>
+
+  <!-- P5 -->
+  <div class="card" id="card-4">
+    <div class="card-header">
+      <div class="card-num">5</div>
+      <div class="card-content">
+        <div class="card-type">General solution</div>
+        <div class="card-claim">$3\sin t = 0$</div>
+        <div class="card-context">Find all real solutions. Use $+ \pi n$ or $+ 2\pi n$ as appropriate.</div>
+      </div>
+    </div>
+    <div class="card-buttons">
+      <button class="btn-hint" onclick="showHint(4)">Hint</button>
+      <button class="btn-steps" id="step-btn-4" onclick="revealStep(4)">Show Step 1 →</button>
+    </div>
+    <div class="hint-box" id="hint-4">Where on the unit circle does $\sin = 0$? Think about the angle, not the quadrant.</div>
+    <div class="steps-reveal" id="steps-4"></div>
+    <div class="self-check" id="sc-4"></div>
+  </div>
+
+  <!-- PART 3 -->
+  <div class="section-divider"><div class="div-line"></div><div class="div-label">Part 3 — Use an identity first</div><div class="div-line"></div></div>
+
+  <!-- P6 -->
+  <div class="card" id="card-5">
+    <div class="card-header">
+      <div class="card-num">6</div>
+      <div class="card-content">
+        <div class="card-type">Double-angle identity · factor</div>
+        <div class="card-claim">$\sin 2x = \sin x$</div>
+        <div class="card-context">Find all solutions on $[0, 2\pi)$. Expect four answers.</div>
+      </div>
+    </div>
+    <div class="card-buttons">
+      <button class="btn-hint" onclick="showHint(5)">Hint</button>
+      <button class="btn-steps" id="step-btn-5" onclick="revealStep(5)">Show Step 1 →</button>
+    </div>
+    <div class="hint-box" id="hint-5">Replace $\sin 2x$ with $2\sin x \cos x$, then move everything to one side and factor out $\sin x$.</div>
+    <div class="steps-reveal" id="steps-5"></div>
+    <div class="self-check" id="sc-5"></div>
+  </div>
+
+</div>
+
+<!-- RESULTS -->
+<div class="results-screen" id="resultsScreen">
+  <div class="results-card">
+    <div class="res-title" id="resTitle">Equations Complete</div>
+    <div class="res-sub" id="resSub"></div>
+    <div class="res-grid">
+      <div class="res-stat"><div class="res-num" id="resGot">—</div><div class="res-lbl">Got It</div></div>
+      <div class="res-stat"><div class="res-num" id="resAlmost">—</div><div class="res-lbl">Almost</div></div>
+      <div class="res-stat"><div class="res-num" id="resNeed">—</div><div class="res-lbl">Need Practice</div></div>
+    </div>
+    <div class="res-btns">
+      <button class="btn-retry" onclick="resetAll()">Try Again ↺</button>
+      <a class="btn-id-link" href="TrigIdentities.html">← Trig Identities</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-cta">
+  <div class="footer-title">Ready for the Full Diagnostic?</div>
+  <div class="footer-sub">Equation-solving appears in Diagnostic D, Problem 8. Work the steps — you've got this.</div>
+  <a href="DiagnosticD_Trigonometry.html" class="footer-link">Open Diagnostic D →</a>
+</div>
+
+<script>
+const PROBLEMS = [
+  { // P1: 2cos x = sqrt(3)
+    steps:[
+      {eq:'$2\\cos x = \\sqrt{3}$', tag:'Starting equation', cls:'tag-alg'},
+      {eq:'$\\cos x = \\dfrac{\\sqrt{3}}{2}$', tag:'Isolate: divide both sides by 2', cls:'tag-iso'},
+      {eq:'Reference angle: $x = \\dfrac{\\pi}{6}$ (since $\\cos\\frac{\\pi}{6} = \\frac{\\sqrt{3}}{2}$)', tag:'Reference angle', cls:'tag-ref'},
+      {eq:'$\\cos > 0$ in Q I and Q IV', tag:'Sign (ASTC)', cls:'tag-quad'},
+      {eq:'$x = \\dfrac{\\pi}{6}\\quad$ (Q I)', tag:'First solution', cls:'tag-sol'},
+      {eq:'$x = 2\\pi - \\dfrac{\\pi}{6} = \\dfrac{11\\pi}{6}\\quad$ (Q IV)', tag:'Second solution', cls:'tag-sol'},
+      {eq:'$\\boxed{x = \\dfrac{\\pi}{6},\\quad \\dfrac{11\\pi}{6}}$', tag:'Final answer', cls:'tag-sol'},
+    ]
+  },
+  { // P2: sqrt(3) tan x + 1 = 0
+    steps:[
+      {eq:'$\\sqrt{3}\\tan x + 1 = 0$', tag:'Starting equation', cls:'tag-alg'},
+      {eq:'$\\sqrt{3}\\tan x = -1$', tag:'Subtract 1 from both sides', cls:'tag-iso'},
+      {eq:'$\\tan x = -\\dfrac{1}{\\sqrt{3}}$', tag:'Isolate: divide by $\\sqrt{3}$', cls:'tag-iso'},
+      {eq:'Reference angle: $\\alpha = \\dfrac{\\pi}{6}$ (since $\\tan\\frac{\\pi}{6} = \\frac{1}{\\sqrt{3}}$)', tag:'Reference angle (positive value)', cls:'tag-ref'},
+      {eq:'$\\tan < 0$ in Q II and Q IV', tag:'Sign (ASTC)', cls:'tag-quad'},
+      {eq:'$x = \\pi - \\dfrac{\\pi}{6} = \\dfrac{5\\pi}{6}\\quad$ (Q II)', tag:'First solution', cls:'tag-sol'},
+      {eq:'$x = 2\\pi - \\dfrac{\\pi}{6} = \\dfrac{11\\pi}{6}\\quad$ (Q IV)', tag:'Second solution', cls:'tag-sol'},
+      {eq:'$\\boxed{x = \\dfrac{5\\pi}{6},\\quad \\dfrac{11\\pi}{6}}$', tag:'Final answer', cls:'tag-sol'},
+    ]
+  },
+  { // P3: 4cos^2 x = 3
+    steps:[
+      {eq:'$4\\cos^2 x = 3$', tag:'Starting equation', cls:'tag-alg'},
+      {eq:'$\\cos^2 x = \\dfrac{3}{4}$', tag:'Isolate: divide by 4', cls:'tag-iso'},
+      {eq:'$\\cos x = \\pm\\dfrac{\\sqrt{3}}{2}$', tag:'Take square root — both $\\pm$', cls:'tag-iso'},
+      {eq:'Reference angle: $\\alpha = \\dfrac{\\pi}{6}$ (since $\\cos\\frac{\\pi}{6} = \\frac{\\sqrt{3}}{2}$)', tag:'Reference angle', cls:'tag-ref'},
+      {eq:'$\\cos x = +\\dfrac{\\sqrt{3}}{2}$: Q I and Q IV', tag:'Positive cos', cls:'tag-quad'},
+      {eq:'$\\cos x = -\\dfrac{\\sqrt{3}}{2}$: Q II and Q III', tag:'Negative cos', cls:'tag-quad'},
+      {eq:'$x = \\dfrac{\\pi}{6}$ (Q I),\\quad $x = \\dfrac{11\\pi}{6}$ (Q IV)', tag:'From positive root', cls:'tag-sol'},
+      {eq:'$x = \\pi - \\dfrac{\\pi}{6} = \\dfrac{5\\pi}{6}$ (Q II),\\quad $x = \\pi + \\dfrac{\\pi}{6} = \\dfrac{7\\pi}{6}$ (Q III)', tag:'From negative root', cls:'tag-sol'},
+      {eq:'$\\boxed{x = \\dfrac{\\pi}{6},\\quad \\dfrac{5\\pi}{6},\\quad \\dfrac{7\\pi}{6},\\quad \\dfrac{11\\pi}{6}}$', tag:'Four solutions — Final answer', cls:'tag-sol'},
+    ]
+  },
+  { // P4: 2sin t = -sqrt(3)
+    steps:[
+      {eq:'$2\\sin t = -\\sqrt{3}$', tag:'Starting equation', cls:'tag-alg'},
+      {eq:'$\\sin t = -\\dfrac{\\sqrt{3}}{2}$', tag:'Isolate: divide by 2', cls:'tag-iso'},
+      {eq:'Reference angle: $\\alpha = \\dfrac{\\pi}{3}$ (since $\\sin\\frac{\\pi}{3} = \\frac{\\sqrt{3}}{2}$)', tag:'Reference angle (positive value)', cls:'tag-ref'},
+      {eq:'$\\sin < 0$ in Q III and Q IV', tag:'Sign (ASTC)', cls:'tag-quad'},
+      {eq:'Q III: $t = \\pi + \\dfrac{\\pi}{3} = \\dfrac{4\\pi}{3}$', tag:'First base solution', cls:'tag-sol'},
+      {eq:'Q IV: $t = 2\\pi - \\dfrac{\\pi}{3} = \\dfrac{5\\pi}{3}$', tag:'Second base solution', cls:'tag-sol'},
+      {eq:'$\\boxed{t = \\dfrac{4\\pi}{3} + 2\\pi n,\\quad t = \\dfrac{5\\pi}{3} + 2\\pi n,\\quad n \\in \\mathbb{Z}}$', tag:'All real solutions', cls:'tag-sol'},
+    ]
+  },
+  { // P5: 3sin t = 0
+    steps:[
+      {eq:'$3\\sin t = 0$', tag:'Starting equation', cls:'tag-alg'},
+      {eq:'$\\sin t = 0$', tag:'Isolate: divide by 3', cls:'tag-iso'},
+      {eq:'$\\sin = 0$ at $t = 0$ and $t = \\pi$ in $[0, 2\\pi)$', tag:'Where does sin equal zero?', cls:'tag-ref'},
+      {eq:'These solutions repeat every $\\pi$, not every $2\\pi$', tag:'Period observation', cls:'tag-quad'},
+      {eq:'$\\boxed{t = \\pi n,\\quad n \\in \\mathbb{Z}}$', tag:'All real solutions — Final answer', cls:'tag-sol'},
+    ]
+  },
+  { // P6: sin 2x = sin x
+    steps:[
+      {eq:'$\\sin 2x = \\sin x$', tag:'Starting equation', cls:'tag-alg'},
+      {eq:'$2\\sin x \\cos x = \\sin x$', tag:'Double-angle identity: $\\sin 2x = 2\\sin x\\cos x$', cls:'tag-id'},
+      {eq:'$2\\sin x \\cos x - \\sin x = 0$', tag:'Move all terms to one side', cls:'tag-alg'},
+      {eq:'$\\sin x\\,(2\\cos x - 1) = 0$', tag:'Factor out $\\sin x$', cls:'tag-alg'},
+      {eq:'$\\sin x = 0\\quad$ or $\\quad 2\\cos x - 1 = 0$', tag:'Zero-product property', cls:'tag-iso'},
+      {eq:'$\\sin x = 0 \\Rightarrow x = 0,\\;\\pi$', tag:'Solve first equation', cls:'tag-sol'},
+      {eq:'$\\cos x = \\tfrac{1}{2} \\Rightarrow x = \\dfrac{\\pi}{3},\\;\\dfrac{5\\pi}{3}$', tag:'Solve second equation', cls:'tag-sol'},
+      {eq:'$\\boxed{x = 0,\\quad \\dfrac{\\pi}{3},\\quad \\pi,\\quad \\dfrac{5\\pi}{3}}$', tag:'Four solutions — Final answer', cls:'tag-sol'},
+    ]
+  },
+];
+
+let stepIndex  = [0,0,0,0,0,0];
+let selfChecks = [null,null,null,null,null,null];
+let completed  = 0;
+
+function toggleRef(btn) {
+  const body = document.getElementById('refBody');
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  btn.classList.toggle('open', !open);
+  btn.setAttribute('aria-expanded', String(!open));
+  if (!open) setTimeout(() => {
+    if (window.renderMathInElement) renderMathInElement(body,{delimiters:[{left:'$',right:'$',display:false}]});
+  }, 50);
+}
+
+function showHint(i) { document.getElementById('hint-'+i).classList.add('show'); }
+
+function revealStep(i) {
+  const p = PROBLEMS[i];
+  const si = stepIndex[i];
+  const wrap = document.getElementById('steps-'+i);
+  wrap.classList.add('show');
+  if (si===0) wrap.innerHTML='';
+  const s = p.steps[si];
+  const row = document.createElement('div');
+  row.className = 'step-row';
+  row.innerHTML = `<div class="step-eq">${s.eq}</div><span class="step-tag ${s.cls}">${s.tag}</span>`;
+  wrap.appendChild(row);
+  if (window.renderMathInElement) renderMathInElement(row,{delimiters:[{left:'$',right:'$',display:false}]});
+  stepIndex[i]++;
+  const btn = document.getElementById('step-btn-'+i);
+  if (stepIndex[i] < p.steps.length) {
+    btn.textContent = `Show Step ${stepIndex[i]+1} →`;
+  } else {
+    btn.textContent='All steps shown';
+    btn.disabled=true;
+    showSelfCheck(i);
+  }
+}
+
+function showSelfCheck(i) {
+  const sc = document.getElementById('sc-'+i);
+  sc.classList.add('show');
+  sc.innerHTML=`<div class="sc-label">How did you do?</div>
+    <div class="sc-btns">
+      <button class="sc-btn sc-got"    id="sc-${i}-got"    onclick="setSC(${i},'got')">✓ Got it</button>
+      <button class="sc-btn sc-almost" id="sc-${i}-almost" onclick="setSC(${i},'almost')">~ Almost</button>
+      <button class="sc-btn sc-need"   id="sc-${i}-need"   onclick="setSC(${i},'need')">✗ Need more practice</button>
+    </div>`;
+}
+
+function setSC(i, val) {
+  if (selfChecks[i]!==null) return;
+  selfChecks[i]=val;
+  ['got','almost','need'].forEach(v => {
+    document.getElementById(`sc-${i}-${v}`).classList.toggle('chosen', v===val);
+  });
+  completed++;
+  updateProgress();
+  if (completed===PROBLEMS.length) setTimeout(showResults,600);
+}
+
+function updateProgress() {
+  const pct=(completed/PROBLEMS.length)*100;
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progCount').textContent=`${completed} / ${PROBLEMS.length}`;
+}
+
+function showResults() {
+  document.getElementById('problemsSection').style.display='none';
+  const got    = selfChecks.filter(s=>s==='got').length;
+  const almost = selfChecks.filter(s=>s==='almost').length;
+  const need   = selfChecks.filter(s=>s==='need').length;
+  document.getElementById('resGot').textContent=got;
+  document.getElementById('resAlmost').textContent=almost;
+  document.getElementById('resNeed').textContent=need;
+  let msg = '';
+  if (got===6) msg="Perfect — you have the four-step process down cold.";
+  else if (got+almost>=4) msg="Strong work. The ones you marked 'almost' just need one more pass.";
+  else msg="Keep at it — open the reference, trace the steps again, and retry.";
+  document.getElementById('resSub').textContent=msg;
+  document.getElementById('resultsScreen').classList.add('show');
+}
+
+function resetAll() {
+  stepIndex=[0,0,0,0,0,0];
+  selfChecks=[null,null,null,null,null,null];
+  completed=0;
+  updateProgress();
+  PROBLEMS.forEach((_,i)=>{
+    document.getElementById('steps-'+i).innerHTML='';
+    document.getElementById('steps-'+i).classList.remove('show');
+    document.getElementById('hint-'+i).classList.remove('show');
+    document.getElementById('sc-'+i).classList.remove('show');
+    document.getElementById('sc-'+i).innerHTML='';
+    const btn=document.getElementById('step-btn-'+i);
+    btn.textContent='Show Step 1 →';
+    btn.disabled=false;
+  });
+  document.getElementById('problemsSection').style.display='block';
+  document.getElementById('resultsScreen').classList.remove('show');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
